@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/UniperCareTechnologies/train-pass/issues"
   },
-  "homepage": "https://github.com/UniperCareTechnologies/train-pass#readme"
+  "homepage": "https://github.com/UniperCareTechnologies/train-pass#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
