@@ -1,13 +1,9 @@
-var http = require('http');
 
-var finalhandler = require('finalhandler');
-var serveStatic = require('serve-static');
+var express = require('express');
 
-var serve = serveStatic("./");
+app.use('/', express.static(__dirname + './'));
 
-var server = http.createServer(function(req, res) {
-  var done = finalhandler(req, res);
-  serve(req, res, done);
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'),function(){
+    console.log('Uniper - UniManage - Front End running on port: ' + port);
 });
-
-server.listen(8000);
