@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>הזמנת שובר לרכבת בין תל אביב לירושלים</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    </head>
+    <body ng-app="myApp" ng-controller="myCtrl" style="direction:rtl">
+        <div id="main">
+            <img src="assets/train-header.png" alt="Train">
+            <p>
+                הזמנת שובר לרכבת מירושלים לתל אביב וחזרה
+            </p>
+
+            <span>ההזמנה ל-</span>
+            <select 
+                ng-options="when.daysDelta as when.title for when in whenList" 
+                ng-model="when">
+            </select>
+            <table>
+                <tr>
+                    <td>
+                        <span>
+                            מירושלים לתל אביב - 
+                        </span>
+                        <select 
+                            ng-options="target.name as target.title for target in telAvivTargets" 
+                            ng-model="taTarget">
+                        </select>
+                            </td>
+                    <td>
+                        <span>
+                            בסביבות שעה - 
+                        </span>
+                        <span class="no-margin">00 :</span>
+                        <select 
+                            ng-options="time for time in timeList" 
+                            ng-model="earlyTime">
+                        </select>
+                        <button ng-click="redirectToTarget('early', 'telAviv')">הזמן שובר</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>
+                            מתל אביב -  
+                        </span>
+                        <select 
+                            ng-options="target.name as target.title for target in telAvivTargets" 
+                            ng-model="taTarget">
+                        </select>
+                        <span>
+                            לירושלים 
+                        </span>
+                    </td>
+                    <td>
+                        <span>
+                            בסביבות שעה - 
+                        </span>
+                        <span class="no-margin">00 :</span>
+                        <select 
+                            ng-options="time for time in timeList" 
+                            ng-model="lateTime">
+                        </select>
+                        <button ng-click="redirectToTarget('late', 'navon')">הזמן שובר</button>
+                            </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+
+        $scope.timeList = [];
+        for(var i = 6; i < 22; i ++){
+            $scope.timeList.push(('0' + i).slice(-2));
+        }
+
+        setTimeout(function(){
+            getDefaultHoursAndLocations();
+        }, 200);
+
+        $scope.telAvivTargets = [
+            { name:"hagana", title: 'ההגנה'},
+            { name:"hashalom", title: 'השלום'},
+            { name:"savidor", title: 'סבידור מרכז'}
+        ];
+
+        var targetCodes = {
+            navon:    "680",
+            hagana:   "4900",
+            hashalom: "4600",
+            savidor:  "3700"
+        };
+
+        $scope.whenList = [
+            { daysDelta: 0, title: "היום"},
+            { daysDelta: 1, title: "מחר"},
+            { daysDelta: 2, title: "מחרתיים"}
+        ];
+        
+        $scope.redirectToTarget = function(time, target){
+            var uri = "https://www.rail.co.il/pages/trainsearchresultnew.aspx?FSID=<<FROM>>&TSID=<<TO>>&Date=<<DATE>>&Hour=<<HOUR>>&IOT=true&IBA=false&TSP=1595329458484";
+
+            var now = new Date();
+            now.setDate(now.getDate() + $scope.when);
+            var today = "" + now.getFullYear() + ("0" + (now.getMonth() + 1)).slice((-2)) + ("0" + now.getDate()).slice(-2);
+
+            uri = uri.replace("<<DATE>>", today);
+            uri = uri.replace("<<HOUR>>", (time == 'early' ? $scope.earlyTime : $scope.lateTime) + "00");
+            uri = uri.replace("<<FROM>>", (target === "navon" ? targetCodes[$scope.taTarget] : targetCodes["navon"]));
+            uri = uri.replace("<<TO>>", (target !== "navon" ? targetCodes[$scope.taTarget] : targetCodes["navon"]));
+
+            localStorage.setItem("taTarget", $scope.taTarget);
+            localStorage.setItem("earlyTime", $scope.earlyTime);
+            localStorage.setItem("lateTime", $scope.lateTime);
+
+            location.replace(uri);
+        };
+
+        function getDefaultHoursAndLocations(){
+            $scope.earlyTime = localStorage.getItem("earlyTime") || "07";
+            $scope.lateTime = localStorage.getItem("lateTime") || "17";
+            $scope.taTarget = localStorage.getItem("taTarget") || "hashalom";
+            $scope.when = 0;
+
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        }
+    });
+
+</script>
+
+<style>
+    p{
+        font-weight: 600;
+    }
+
+    body{
+        font-size:24px;
+        font-family: arial;
+        padding:20px;
+    }
+    table{
+        margin:15px 0;
+        font-size:24px;
+    }
+    span{
+        margin:5px;
+    }
+    img{
+        width:735px;
+    }
+    button{
+        margin: 0 25px;
+    }
+    select, button{
+        font-size:20px;
+    }
+    .no-margin{
+        margin:5 0;
+    }
+    td{
+        padding: 10px 0px;
+    }
+    #main{
+        margin: auto;
+        width: 800px;
+    }
+</style>
