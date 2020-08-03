@@ -1,0 +1,23 @@
+{
+  "name": "train-pass",
+  "version": "1.0.0",
+  "description": "train pass generator for Jerusalem <--> Tel Aviv line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UniperCareTechnologies/train-pass.git"
+  },
+  "keywords": [
+    "train",
+    "pass"
+  ],
+  "author": "Ilank",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UniperCareTechnologies/train-pass/issues"
+  },
+  "homepage": "https://github.com/UniperCareTechnologies/train-pass#readme"
+}
