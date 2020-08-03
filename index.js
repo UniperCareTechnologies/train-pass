@@ -4,6 +4,9 @@ var app = express();
 var port = 443;
 app.use('/', express.static(__dirname));
 
+app.use(express.static(__dirname));
+
+
 app.set('port', (process.env.PORT || port));
 app.listen(app.get('port'),function(){
     console.log('server running on port: ' + port);
